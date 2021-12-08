@@ -22,11 +22,11 @@ class CreateTask(generics.ListCreateAPIView):
         send_email_notification.apply_async((self.request.user.email,), eta=send_date, instance=created_object.name)
 
     def create(self, request, *args, **kwargs):
-        if not self.request.user.is_staff and not self.request.user.is_superuser:
-            return Response("You don't have a permission to create a task", HTTP_400_BAD_REQUEST)
+        # if not self.request.user.is_staff and not self.request.user.is_superuser:
+        #     return Response("You don't have a permission to create a task", HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        # self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, HTTP_201_CREATED, headers=headers)
 
