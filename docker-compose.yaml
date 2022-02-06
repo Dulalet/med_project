@@ -5,7 +5,6 @@ services:
     restart: "always"
     volumes:
       - "./data/db:/var/lib/postgresql/data"
-    user: 1000:1000
     environment:
       - "POSTGRES_DB=postgres"
       - "POSTGRES_USER=postgres"
@@ -13,11 +12,20 @@ services:
     networks:
       - "djangonetwork"
     ports:
-      - "5455:5432"
+      - "5432:5432"
+
+  adminer:
+    image: "adminer"
+    restart: "always"
+    ports:
+      - "8080:8080"
+
   web:
     build: "."
     image: "medapp:latest"
     restart: "always"
+    expose:
+      - "80"
     ports:
       - "8000:8000"
     volumes:
@@ -33,30 +41,30 @@ services:
     networks:
       - "djangonetwork"
 
-  redis:
-   image: 'bitnami/redis:latest'
-   ports:
-     - '6379:6379'
-   environment:
-     - ALLOW_EMPTY_PASSWORD=yes
-   networks:
-     - "djangonetwork"
+  # redis:
+  #  image: 'bitnami/redis:latest'
+  #  ports:
+  #    - '6379:6379'
+  #  environment:
+  #    - ALLOW_EMPTY_PASSWORD=yes
+  #  networks:
+  #    - "djangonetwork"
 
-  celery:
-   image: "medapp:latest"
-   restart: "always"
-   networks:
-     - "djangonetwork"
-   volumes:
-     - ".:/usr/src/app"
-   environment:
-       - "DB_HOST=db"
-       - "DB_NAME=postgres"
-       - "DB_USER=postgres"
-       - "DB_PASSWORD=postgres"
-   command: bash -c "celery -A medapp worker -l INFO"
-   depends_on:
-     - "redis"
+  # celery:
+  #  image: "medapp:latest"
+  #  restart: "always"
+  #  networks:
+  #    - "djangonetwork"
+  #  volumes:
+  #    - ".:/usr/src/app"
+  #  environment:
+  #      - "DB_HOST=db"
+  #      - "DB_NAME=postgres"
+  #      - "DB_USER=postgres"
+  #      - "DB_PASSWORD=postgres"
+  #  command: bash -c "celery -A medapp worker -l INFO"
+  #  depends_on:
+  #    - "redis"
 
 networks:
   djangonetwork:
