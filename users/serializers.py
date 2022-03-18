@@ -4,7 +4,24 @@ from rest_framework import serializers
 
 from django.contrib.auth.models import BaseUserManager
 
+from users.models import MedicalWorker
+
 User = get_user_model()
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        # fields = '__all__'
+        fields = ['uuid', 'username', 'first_name', 'last_name', 'email', 'date_joined', 'phone_number',
+                  'date_of_birth', 'gender', 'category', 'profile_photo']
+
+
+class MedicalWorkerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedicalWorker
+        fields = ['department', 'is_department_head', 'education', 'category', 'specialization', 'work_experience',
+                  'years_of_experience']
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -17,8 +34,8 @@ class AuthUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'auth_token')
-        read_only_fields = ('id', 'is_active', 'is_staff')
+        fields = ('uuid', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'auth_token')
+        read_only_fields = ('uuid', 'is_active', 'is_staff')
 
     def get_auth_token(self, obj):
         token, cond = Token.objects.get_or_create(user=obj)
@@ -32,7 +49,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'password', 'first_name', 'last_name')
+        fields = ('uuid', 'email', 'password', 'first_name', 'last_name')
 
     def validate_email(self, value):
         user = User.objects.filter(email=value)

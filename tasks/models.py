@@ -1,6 +1,6 @@
-import django.contrib.auth.models
 from django.db import models
-from rest_framework.authtoken.admin import User
+
+from users.models import CustomUser
 
 
 class TaskPriority(models.IntegerChoices):
@@ -15,5 +15,5 @@ class Task(models.Model):
     description = models.TextField(blank=False, null=False)
     priority = models.IntegerField(default=TaskPriority.LOW, choices=TaskPriority.choices)
     deadline = models.DateTimeField(blank=True, null=True)
-    user = models.ForeignKey(django.contrib.auth.models.User, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
 

@@ -14,12 +14,6 @@ services:
     ports:
       - "5432:5432"
 
-  adminer:
-    image: "adminer"
-    restart: "always"
-    ports:
-      - "8080:8080"
-
   web:
     build: "."
     image: "medapp:latest"
@@ -35,7 +29,8 @@ services:
       - "DB_NAME=postgres"
       - "DB_USER=postgres"
       - "DB_PASSWORD=postgres"
-    command: bash -c "python3 manage.py runserver [::]:8000"
+    command: sh -c "python manage.py collectstatic --no-input && 
+      python3 manage.py runserver [::]:8000"
     depends_on:
       - "db"
     networks:

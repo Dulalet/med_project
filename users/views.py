@@ -1,14 +1,17 @@
 from django.contrib.auth import get_user_model, logout
 from django.core.exceptions import ImproperlyConfigured
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from . import serializers
+from .models import MedicalWorker
+from .serializers import MedicalWorkerSerializer
 from .utils import get_and_authenticate_user, create_user_account
 
 User = get_user_model()
+
 
 class AuthViewSet(viewsets.GenericViewSet):
     permission_classes = [AllowAny, ]
@@ -63,3 +66,12 @@ class AuthViewSet(viewsets.GenericViewSet):
         if self.action in self.serializer_classes.keys():
             return self.serializer_classes[self.action]
         return super().get_serializer_class()
+
+
+# class MedWorkerViewSet(mixins.CreateModelMixin,
+#                        mixins.ListModelMixin,
+#                        mixins.RetrieveModelMixin,
+#                        viewsets.GenericViewSet):
+#     queryset = MedicalWorker.objects.all()
+#     serializer_class = MedicalWorkerSerializer
+#     permission_classes = [AllowAny]
